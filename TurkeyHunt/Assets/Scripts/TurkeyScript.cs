@@ -11,11 +11,9 @@ public class TurkeyScript : MonoBehaviour
     private float shots = 3f;
     private Rigidbody2D rb;
 
-
     void Start()
     {
-        shots = 3f;
-        PlayerPrefs.SetInt("Shots", (int)shots);
+        PlayerPrefs.SetInt("Shots", 3);
         mainCamera = Camera.main;
         target = new GameObject().transform;
         rb = GetComponent<Rigidbody2D>();
@@ -25,6 +23,10 @@ public class TurkeyScript : MonoBehaviour
 
     void Update()
     {
+        if (target == null)
+        {
+            return;
+        }
         PlayerPrefs.SetInt("Shots", (int)shots);
         Vector2 direction = target.position - transform.position;
         direction.Normalize();
@@ -60,6 +62,9 @@ public class TurkeyScript : MonoBehaviour
             int currentScore = PlayerPrefs.GetInt("Score");
             PlayerPrefs.SetInt("Score", currentScore + 1);
             rb.gravityScale = 1;
+            Destroy(target.gameObject);
+            target = null;
+            Destroy(gameObject, 2f);
         }
         else
         {

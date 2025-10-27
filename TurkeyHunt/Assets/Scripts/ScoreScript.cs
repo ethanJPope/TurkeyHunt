@@ -13,6 +13,7 @@ public class ScoreScript : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(PlayerPrefs.GetInt("Shots"));
         switch (PlayerPrefs.GetInt("Shots")) {
             case 0:
                 bullets[0].enabled = false;
