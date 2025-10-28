@@ -8,7 +8,7 @@ public class TurkeyScript : MonoBehaviour
     [SerializeField] private float speed = 5f;
     private Transform target;
     private Camera mainCamera;
-    private float shots = 3f;
+    private float shots = 5f;
     private Rigidbody2D rb;
 
     void Start()
@@ -23,11 +23,13 @@ public class TurkeyScript : MonoBehaviour
 
     void Update()
     {
+        //Debug.Log("Speeed " + speed);
         if (target == null)
         {
             return;
         }
         PlayerPrefs.SetInt("Shots", (int)shots);
+        speed = (float)PlayerPrefs.GetInt("TurkeySpeed");
         Vector2 direction = target.position - transform.position;
         direction.Normalize();
         transform.position = Vector3.MoveTowards(this.transform.position, target.position, speed * Time.deltaTime);
@@ -43,6 +45,7 @@ public class TurkeyScript : MonoBehaviour
         {
             shootTurkey();
         }
+        
     }
 
     public Vector3 getRandomTargetPosition()
@@ -54,22 +57,39 @@ public class TurkeyScript : MonoBehaviour
     public void shootTurkey()
     {
         Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        if (Vector2.Distance(mousePos, transform.position) < 1f)
+        if (Vector2.Distance(mousePos, transform.position) < 1f && shots > 0)
         {
             shots -= 1;
             PlayerPrefs.SetInt("TurkeyDead", 1);
             Debug.Log("Hit!");
             int currentScore = PlayerPrefs.GetInt("Score");
-            PlayerPrefs.SetInt("Score", currentScore + 1);
+            int currentSkip = PlayerPrefs.GetInt("Skip");
+            PlayerPrefs.SetInt("Score", currentScore + currentSkip + 1);
+            PlayerPrefs.SetInt("Skip", 0);
+            PlayerPrefs.SetInt("FinalScore", PlayerPrefs.GetInt("FinalScore") + 1);
             rb.gravityScale = 1;
             Destroy(target.gameObject);
             target = null;
-            Destroy(gameObject, 2f);
+            //Destroy(gameObject, 2f);
         }
         else
         {
             Debug.Log("Missed!");
             shots -= 1;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other) {
+        if (other.gameObject.CompareTag("Floor")) 
+        {
+            Destroy(gameObject);
+        } else if (other.gameObject.CompareTag("Wall")) 
+        {
+            PlayerPrefs.SetInt("TurkeyDead", 1);
+            int currentSkip = PlayerPrefs.GetInt("Skip");
+            PlayerPrefs.SetInt("Skip", currentSkip + 1);
+            Destroy(gameObject);
+
         }
     }
 

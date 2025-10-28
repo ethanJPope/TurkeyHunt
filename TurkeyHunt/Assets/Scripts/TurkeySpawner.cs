@@ -9,13 +9,20 @@ public class TurkeySpawner : MonoBehaviour
 
     void Update()
     {
-        if(PlayerPrefs.GetInt("Score") <= 10) 
-        {        
-            if(PlayerPrefs.GetInt("TurkeyDead") == 1) 
+        
+        if (PlayerPrefs.GetInt("Score") <= 10)
+        {
+            if (PlayerPrefs.GetInt("TurkeyDead") == 1)
             {
                 PlayerPrefs.SetInt("TurkeyDead", 0);
                 StartCoroutine(SpawnAfterDelay());
             }
+        }
+        else
+        {
+            PlayerPrefs.SetInt("Score", 0);
+            PlayerPrefs.SetInt("Skip", 0);
+            PlayerPrefs.SetInt("Level", PlayerPrefs.GetInt("Level") + 1);
         }
     }
 

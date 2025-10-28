@@ -7,14 +7,16 @@ public class ScoreScript : MonoBehaviour
 
     void Start()
     {
+        PlayerPrefs.SetInt("FinalScore", 0);
         PlayerPrefs.SetInt("TurkeyDead", 0);
         PlayerPrefs.SetInt("Score", 0);
+        PlayerPrefs.SetInt("Skip", 0);
     }
 
     void Update()
     {
-        Debug.Log(PlayerPrefs.GetInt("Shots"));
-        switch (PlayerPrefs.GetInt("Shots")) {
+        switch (PlayerPrefs.GetInt("Shots"))
+        {
             case 0:
                 bullets[0].enabled = false;
                 bullets[1].enabled = false;
@@ -36,7 +38,8 @@ public class ScoreScript : MonoBehaviour
                 bullets[2].enabled = true;
                 break;
         }
-        switch (PlayerPrefs.GetInt("Score")) {
+        switch (PlayerPrefs.GetInt("Score"))
+        {
             case 1:
                 scoreThings[0].color = Color.red;
                 break;
@@ -67,12 +70,19 @@ public class ScoreScript : MonoBehaviour
             case 10:
                 scoreThings[9].color = Color.red;
                 break;
-            default :
+            default:
                 for (int i = 0; i < scoreThings.Length; i++)
                 {
                     scoreThings[i].color = Color.white;
                 }
                 break;
         }
+        if (scoreThings[9].color == Color.red)
+        {
+            PlayerPrefs.SetInt("Score", 0);
+            PlayerPrefs.SetInt("Skip", 0);
+            PlayerPrefs.SetInt("Level", PlayerPrefs.GetInt("Level") + 1);
+        }
+
     }
 }
